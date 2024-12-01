@@ -14,12 +14,36 @@ type Day1 struct{}
 
 func (Day1) CompleteTask(input []string) {
 	distance := 0
-	for _, idPair := range getIdsOrdered(input) {
+	similarityScore := 0
+	idsOrdered := getIdsOrdered(input)
+	rightColumn := getRightColumn(idsOrdered)
+	for _, idPair := range idsOrdered {
 		distance += calculateDistance(idPair)
+		similarityScore += calculateSimilarity(idPair[0], rightColumn)
 	}
+
 	fmt.Println("---------------")
 	fmt.Printf("Result ID distance: %d%s", distance, utils.GetLineSeparator())
+	fmt.Printf("Result similarity score: %d%s", similarityScore, utils.GetLineSeparator())
 	fmt.Println("---------------")
+}
+
+func calculateSimilarity(base int, rightColumn []int) int {
+	similarity := 0
+	for _, idFromRightrColumn := range rightColumn {
+		if idFromRightrColumn == base {
+			similarity++
+		}
+	}
+	return base * similarity
+}
+
+func getRightColumn(ids [][]int) []int {
+	rightColumn := make([]int, 0)
+	for _, row := range ids {
+		rightColumn = append(rightColumn, row[1])
+	}
+	return rightColumn
 }
 
 func calculateDistance(row []int) int {

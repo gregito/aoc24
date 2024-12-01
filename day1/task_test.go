@@ -13,6 +13,4 @@ func TestCompleteTask(t *testing.T) {
 		log.Fatalf("%s%s\n", utils.TestSetupFailedMsg, err.Error())
 	}
 	Day1{}.CompleteTask(lines)
-
-	// 1970720
 }
