@@ -11,10 +11,8 @@ func ReadFileAndGetItsLines(path string) ([]string, error) {
 	log.Printf("About to open file: %s", path)
 	content, err := os.ReadFile(path)
 	if err != nil {
-		log.Println("Unable to read file due to: " + err.Error())
 		return nil, err
 	}
-	log.Println("Reading file was successful, about to split it into lines.")
 	lines := strings.Split(string(content), GetLineSeparator())
 	return lines, nil
 }
