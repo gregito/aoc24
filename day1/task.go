@@ -2,7 +2,6 @@ package day1
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/gregito/aoc24/utils"
@@ -59,8 +58,8 @@ func getIdsOrdered(input []string) [][]int {
 	for _, idPair := range input {
 		id := strings.Split(idPair, idSeparator)
 		asInt := make([]int, 0)
-		asInt = append(asInt, getAsInt(id[0]))
-		asInt = append(asInt, getAsInt(id[1]))
+		asInt = append(asInt, utils.StringAsInt(id[0]))
+		asInt = append(asInt, utils.StringAsInt(id[1]))
 		ids = append(ids, asInt)
 	}
 	orderIds(&ids)
@@ -90,10 +89,4 @@ func orderIds(ids *[][]int) {
 		(*ids)[minLeftIndex][0] = leftTemp
 		(*ids)[minRightIndex][1] = rightTemp
 	}
-}
-
-func getAsInt(id string) int {
-	asInt, _ := strconv.Atoi(id)
-	// I mean c'mon, no error should occur
-	return asInt
 }
