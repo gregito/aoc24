@@ -17,12 +17,39 @@ const (
 type Day4 struct{}
 
 func (Day4) CompleteTask(input []string) {
-	total := 0
-	total += findAllHorizontal(input) + findAllVertical(input) + findAllDiagonal(input)
+	totalXmas := findAllHorizontal(input) + findAllVertical(input) + findAllDiagonal(input)
+	totalCrossMas := findAllCrossMas(input)
 
 	fmt.Println("---------------")
-	fmt.Printf("Number of XMAS: %d%s", total, utils.GetLineSeparator())
+	fmt.Printf("Number of XMAS: %d%s", totalXmas, utils.GetLineSeparator())
+	fmt.Printf("Number of X-MAS: %d%s", totalCrossMas, utils.GetLineSeparator())
 	fmt.Println("---------------")
+}
+
+func findAllCrossMas(input []string) int {
+	count := 0
+	for i := 0; i < len(input)-2; i++ {
+		firstLine := strings.Split(input[i], "")
+		middleLine := strings.Split(input[i+1], "")
+		lastLine := strings.Split(input[i+2], "")
+		for j := 0; j < len(firstLine)-2; j++ {
+			if middleLine[j+1] != "A" {
+				continue
+			} else {
+				diagonalFound := 0
+				if (firstLine[j] == "M" && lastLine[j+2] == "S") || (firstLine[j] == "S" && lastLine[j+2] == "M") {
+					diagonalFound++
+				}
+				if (firstLine[j+2] == "M" && lastLine[j] == "S") || (firstLine[j+2] == "S" && lastLine[j] == "M") {
+					diagonalFound++
+				}
+				if diagonalFound == 2 {
+					count++
+				}
+			}
+		}
+	}
+	return count
 }
 
 func findAllHorizontal(input []string) int {
