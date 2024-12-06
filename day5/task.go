@@ -2,16 +2,18 @@ package day5
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/gregito/aoc24/utils"
 )
 
+var rules = make([]rule, 0)
+
 type Day5 struct{}
 
 type update struct {
-	pages        []int
-	inRightOrder bool
+	pages []int
 }
 
 type rule struct {
@@ -20,47 +22,89 @@ type rule struct {
 }
 
 func (Day5) CompleteTask(input []string) {
+	rules = getRulesFromInput(input)
 	updates := getUpdates(input)
 
-	validUpdates := checkRules(&updates, input)
-	validUpdateSum := 0
-	for _, validUpdate := range validUpdates {
-		validUpdateSum += validUpdate[(len(validUpdate) / 2)]
-	}
+	validUpdates := checkRules(&updates)
+	validUpdateSum := getSumOfMidValues(validUpdates)
+
+	collectUnorderedUpdates(updates, validUpdates)
+	orderedSum := 0
 
 	fmt.Println("---------------")
 	fmt.Printf("Sum of valid page mids: %d%s", validUpdateSum, utils.GetLineSeparator())
+	fmt.Printf("Sum of newly ordered page mids: %d%s", orderedSum, utils.GetLineSeparator())
 	fmt.Println("---------------")
 }
 
-func checkRules(updates *[]update, input []string) [][]int {
-	validUpdates := make([][]int, 0)
-	rules := getRulesFromInput(input)
+func reorder(upd update) update {
+	//ordered := false
+	for i := 0; i < len(upd.pages)-1; i++ {
+		ordered := false
+		for j, rule := range rules {
+			
+		}
+	}
+	return upd
+}
+
+func getSumOfMidValues(updates []update) int {
+	updateSum := 0
+	for _, u := range updates {
+		updateSum += u.pages[(len(u.pages) / 2)]
+	}
+	return updateSum
+}
+
+func checkRules(updates *[]update) []update {
+	validUpdates := make([]update, 0)
 	for _, update := range *updates {
 		valid := true
 		for _, rule := range rules {
-			if sliceContainsBothNumbers(update.pages, rule.firstNumber, rule.secondNumber) {
-				indexOfFirst := 0
-				indexOfSecond := 0
-				for i, page := range update.pages {
-					if page == rule.firstNumber {
-						indexOfFirst = i
-						continue
-					}
-					if page == rule.secondNumber {
-						indexOfSecond = i
-					}
-				}
-				if indexOfFirst >= indexOfSecond {
-					valid = false
-				}
-			}
+			valid = checkUpdateWithRule(update, rule, valid)
 		}
 		if valid {
-			validUpdates = append(validUpdates, update.pages)
+			validUpdates = append(validUpdates, update)
 		}
 	}
 	return validUpdates
+}
+
+func checkUpdateWithRule(update update, rule rule, valid bool) bool {
+	if sliceContainsBothNumbers(update.pages, rule.firstNumber, rule.secondNumber) {
+		indexOfFirst := 0
+		indexOfSecond := 0
+		for i, page := range update.pages {
+			if page == rule.firstNumber {
+				indexOfFirst = i
+				continue
+			}
+			if page == rule.secondNumber {
+				indexOfSecond = i
+			}
+		}
+		if indexOfFirst >= indexOfSecond {
+			valid = false
+		}
+	}
+	return valid
+}
+
+func collectUnorderedUpdates(allUpdates []update, orderedUpdates []update) []update {
+	unorderedOnes := make([]update, 0)
+	for _, update := range allUpdates {
+		found := false
+		for _, orderedUpdate := range orderedUpdates {
+			if reflect.DeepEqual(update.pages, orderedUpdate.pages) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			unorderedOnes = append(unorderedOnes, update)
+		}
+	}
+	return unorderedOnes
 }
 
 func getRulesFromInput(input []string) []rule {

@@ -8,7 +8,7 @@ import (
 )
 
 func TestCompleteTask(t *testing.T) {
-	lines, err := utils.ReadFileAndGetItsLines("d5_input.txt")
+	lines, err := utils.ReadFileAndGetItsLines("d5_input_example.txt")
 	if err != nil {
 		log.Fatalf("%s%s\n", utils.TestSetupFailedMsg, err.Error())
 	}
